@@ -20,6 +20,7 @@ requirements:
     - pip
     - setuptools >=61.0
     - setuptools-scm >=6.2
+    - toml
   run:
     - python
     - geopandas >=0.14.0
@@ -32,7 +33,7 @@ requirements:
     - pulp >=2.8
     - scikit-learn >=1.4.0
     - scipy >=1.12.0
-    - shapely >=2.1.1
+    - shapely >=2.1.0
     - spaghetti >=1.7.4
     - tqdm >=4.66.0
 
