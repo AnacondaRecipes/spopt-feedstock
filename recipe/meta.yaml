@@ -37,14 +37,25 @@ requirements:
     - spaghetti >=1.7.4
     - tqdm >=4.66.0
 
+{% set skip_tests = "" %}
+# missing test data file: airbnb_Chicago 2015.shp
+# DataSourceError: None: No such file or directory
+{% set skip_tests = skip_tests + " --deselect=spopt/tests/test_region/test_sa3.py::TestSA3::test_ward_eom_3" %}
+{% set skip_tests = skip_tests + " --deselect=spopt/tests/test_region/test_sa3.py::TestSA3::test_ward_leaf_10" %}
+{% set skip_tests = skip_tests + " --deselect=spopt/tests/test_region/test_sa3.py::TestSA3::test_extract_clusters" %}
+{% set skip_tests = skip_tests + " --deselect=spopt/tests/test_region/test_sa3.py::TestSA3::test_invalid_extraction" %}
+
 test:
+  source_files:
+    - spopt/tests
   imports:
-    - {{ name }}
+    - spopt
   commands:
-    - pip check
+    - pytest -vv {{ skip_tests }} spopt/tests
   requires:
     - pip
     - python
+    - pytest
 
 about:
   home: https://pysal.org/spopt
