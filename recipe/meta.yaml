@@ -51,6 +51,8 @@ test:
   imports:
     - spopt
   commands:
+    - pip check
+    - python -c "from importlib.metadata import version; assert(version('{{ name }}')=='{{ version }}')"
     - pytest -vv {{ skip_tests }} spopt/tests
   requires:
     - pip
