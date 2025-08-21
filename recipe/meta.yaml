@@ -1,4 +1,3 @@
-{% set python_min = "3.11" %}
 {% set name = "spopt" %}
 {% set version = "0.7.0" %}
 
@@ -11,18 +10,19 @@ source:
   sha256: ed599b8c0e219682e48e85852b615dbc6f122ef2907d73c11894ad3ffdb39d47
 
 build:
-  noarch: python
-  number: 1
-  script: {{ PYTHON }} -m pip install . --no-deps --ignore-installed --no-cache-dir -vvv
+  skip: true  # [py<311]
+  number: 0
+  script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation --ignore-installed --no-cache-dir -vvv
 
 requirements:
   host:
-    - python {{ python_min }}
+    - python
     - pip
     - setuptools >=61.0
     - setuptools-scm >=6.2
+    - toml
   run:
-    - python >={{ python_min }}
+    - python
     - geopandas >=0.14.0
     - libpysal >=4.10.0
     - mapclassify >=2.7.0
@@ -33,29 +33,47 @@ requirements:
     - pulp >=2.8
     - scikit-learn >=1.4.0
     - scipy >=1.12.0
-    - shapely >=2.1.1
+    - shapely >=2.1.0
     - spaghetti >=1.7.4
     - tqdm >=4.66.0
 
+{% set skip_tests = "" %}
+# missing test data file: airbnb_Chicago 2015.shp
+# DataSourceError: None: No such file or directory
+{% set skip_tests = skip_tests + " --deselect=spopt/tests/test_region/test_sa3.py::TestSA3::test_ward_eom_3" %}
+{% set skip_tests = skip_tests + " --deselect=spopt/tests/test_region/test_sa3.py::TestSA3::test_ward_leaf_10" %}
+{% set skip_tests = skip_tests + " --deselect=spopt/tests/test_region/test_sa3.py::TestSA3::test_extract_clusters" %}
+{% set skip_tests = skip_tests + " --deselect=spopt/tests/test_region/test_sa3.py::TestSA3::test_invalid_extraction" %}
+
 test:
+  source_files:
+    - spopt/tests
   imports:
-    - {{ name }}
+    - spopt
   commands:
     - pip check
+    - python -c "from importlib.metadata import version; assert(version('{{ name }}')=='{{ version }}')"
+    - pytest -vv {{ skip_tests }} spopt/tests
   requires:
     - pip
-    - python {{ python_min }}
+    - python
+    - pytest
 
 about:
-  home: http://pysal.org/
+  home: https://pysal.org/spopt
   license: BSD-3-Clause
   license_family: BSD
   license_file: LICENSE.txt
-  summary: 'spopt: Spatial Optimization'
+  summary: spopt - Spatial Optimization
   description: |
-    Spopt is an open-source Python library for solving optimization problems with spatial data. Originating from the `region` module in [PySAL](http://pysal.org) (Python Spatial Analysis Library), it is under active development for the inclusion of newly proposed models and methods for regionalization, facility location, and transportation-oriented solutions.
-  doc_url: https://pysal.org/{{ name }}/
-  dev_url: http://github.com/pysal/{{ name }}
+    Spopt is an open-source Python library for solving optimization problems
+    with spatial data. Originating from the `region` module
+    in [PySAL](http://pysal.org) (Python Spatial Analysis Library), it is
+    under active development for the inclusion of newly proposed models and
+    methods for regionalization, facility location, and
+    transportation-oriented solutions.
+  doc_url: https://pysal.org/spopt
+  dev_url: https://github.com/pysal/spopt
 
 extra:
   recipe-maintainers:
