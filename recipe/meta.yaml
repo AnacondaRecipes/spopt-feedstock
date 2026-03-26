@@ -11,7 +11,7 @@ source:
 
 build:
   skip: true  # [py<311]
-  number: 0
+  number: 1
   script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation --ignore-installed --no-cache-dir -vvv
 
 requirements:
@@ -48,16 +48,20 @@ requirements:
 test:
   source_files:
     - spopt/tests
+    - pyproject.toml
+  files:
+    - patch_pulp.py
   imports:
     - spopt
   commands:
     - pip check
-    - python -c "from importlib.metadata import version; assert(version('{{ name }}')=='{{ version }}')"
-    - pytest -vv {{ skip_tests }} spopt/tests
+    - if exist %PREFIX%\Library\bin\cbc.exe (if not exist %PREFIX%\Lib\site-packages\pulp\solverdir\cbc\win\i64 (mkdir %PREFIX%\Lib\site-packages\pulp\solverdir\cbc\win\i64) && copy %PREFIX%\Library\bin\cbc.exe %PREFIX%\Lib\site-packages\pulp\solverdir\cbc\win\i64\cbc.exe)  # [win]
+    - pytest -vv spopt/tests {{ skip_tests }}
   requires:
     - pip
     - python
     - pytest
+    - coin-or-cbc
 
 about:
   home: https://pysal.org/spopt
