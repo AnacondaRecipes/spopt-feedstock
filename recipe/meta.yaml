@@ -49,8 +49,6 @@ test:
   source_files:
     - spopt/tests
     - pyproject.toml
-  files:
-    - patch_pulp.py
   imports:
     - spopt
   commands:
