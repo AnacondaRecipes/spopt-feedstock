@@ -48,13 +48,13 @@ requirements:
 test:
   source_files:
     - spopt/tests
-    - pyproject.toml
   imports:
     - spopt
   commands:
     - pip check
+    - python -c "from importlib.metadata import version; assert(version('{{ name }}')=='{{ version }}')"
     - if exist %PREFIX%\Library\bin\cbc.exe (if not exist %PREFIX%\Lib\site-packages\pulp\solverdir\cbc\win\i64 (mkdir %PREFIX%\Lib\site-packages\pulp\solverdir\cbc\win\i64) && copy %PREFIX%\Library\bin\cbc.exe %PREFIX%\Lib\site-packages\pulp\solverdir\cbc\win\i64\cbc.exe)  # [win]
-    - pytest -vv spopt/tests {{ skip_tests }}
+    - pytest -vv {{ skip_tests }} spopt/tests
   requires:
     - pip
     - python
