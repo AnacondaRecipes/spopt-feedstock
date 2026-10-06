@@ -1,17 +1,24 @@
 {% set name = "spopt" %}
-{% set version = "0.7.0" %}
+{% set version = "0.8.0" %}
+{% set skip_tests = "" %}
+{% set skip_tests = 'skip_tests + " --deselect=spopt/tests/test_region/test_sa3.py::TestSA3::test_ward_eom_3"' %}
+{% set skip_tests = 'skip_tests + " --deselect=spopt/tests/test_region/test_sa3.py::TestSA3::test_ward_leaf_10"' %}
+{% set skip_tests = 'skip_tests + " --deselect=spopt/tests/test_region/test_sa3.py::TestSA3::test_extract_clusters"' %}
+{% set skip_tests = 'skip_tests + " --deselect=spopt/tests/test_region/test_sa3.py::TestSA3::test_invalid_extraction"' %}
 
+# missing test data file: airbnb_Chicago 2015.shp
+# DataSourceError: None: No such file or directory
 package:
   name: {{ name|lower }}
   version: {{ version }}
 
 source:
   url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
-  sha256: ed599b8c0e219682e48e85852b615dbc6f122ef2907d73c11894ad3ffdb39d47
+  sha256: 4c74d8675d0d178cf0ae217315cbfd2c2259808298faea271909f30d154bdc9b
 
 build:
-  skip: true  # [py<311]
-  number: 1
+  skip: true  # [py<312]
+  number: 0
   script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation --ignore-installed --no-cache-dir -vvv
 
 requirements:
@@ -23,27 +30,22 @@ requirements:
     - toml
   run:
     - python
-    - geopandas >=0.14.0
-    - libpysal >=4.10.0
-    - mapclassify >=2.7.0
-    - networkx >=3.2
-    - numpy >=1.26.0
-    - pandas >=2.1.0
-    - pointpats >=2.4.0
-    - pulp >=2.8
-    - scikit-learn >=1.4.0
-    - scipy >=1.12.0
+    - geopandas >=1.1.0
+    - libpysal >=4.12.0
+    - mapclassify >=2.9.0
+    - networkx >=3.4
+    - numpy >=2.0.0
+    - pandas >=2.3.0
+    - pointpats >=2.5.2
+    - pulp >=3.2,<4
+    - scikit-learn >=1.5.0
+    - scipy >=1.14.0
     - shapely >=2.1.0
     - spaghetti >=1.7.4
-    - tqdm >=4.66.0
-
-{% set skip_tests = "" %}
-# missing test data file: airbnb_Chicago 2015.shp
-# DataSourceError: None: No such file or directory
-{% set skip_tests = skip_tests + " --deselect=spopt/tests/test_region/test_sa3.py::TestSA3::test_ward_eom_3" %}
-{% set skip_tests = skip_tests + " --deselect=spopt/tests/test_region/test_sa3.py::TestSA3::test_ward_leaf_10" %}
-{% set skip_tests = skip_tests + " --deselect=spopt/tests/test_region/test_sa3.py::TestSA3::test_extract_clusters" %}
-{% set skip_tests = skip_tests + " --deselect=spopt/tests/test_region/test_sa3.py::TestSA3::test_invalid_extraction" %}
+    - tqdm >=4.67.0
+  run_constrained:
+    - matplotlib-base >=3.8
+    - fast_hdbscan >=0.2.2
 
 test:
   source_files:
