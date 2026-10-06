@@ -1,15 +1,8 @@
 {% set name = "spopt" %}
 {% set version = "0.8.0" %}
-{% set skip_tests = "" %}
-{% set skip_tests = 'skip_tests + " --deselect=spopt/tests/test_region/test_sa3.py::TestSA3::test_ward_eom_3"' %}
-{% set skip_tests = 'skip_tests + " --deselect=spopt/tests/test_region/test_sa3.py::TestSA3::test_ward_leaf_10"' %}
-{% set skip_tests = 'skip_tests + " --deselect=spopt/tests/test_region/test_sa3.py::TestSA3::test_extract_clusters"' %}
-{% set skip_tests = 'skip_tests + " --deselect=spopt/tests/test_region/test_sa3.py::TestSA3::test_invalid_extraction"' %}
 
-# missing test data file: airbnb_Chicago 2015.shp
-# DataSourceError: None: No such file or directory
 package:
-  name: {{ name|lower }}
+  name: {{ name }}
   version: {{ version }}
 
 source:
@@ -44,8 +37,18 @@ requirements:
     - spaghetti >=1.7.4
     - tqdm >=4.67.0
   run_constrained:
+    # notebooks
     - matplotlib-base >=3.8
+    # sa3
     - fast_hdbscan >=0.2.2
+
+# missing test data file: airbnb_Chicago 2015.shp
+# DataSourceError: None: No such file or directory
+{% set skip_tests = "" %}
+{% set skip_tests = skip_tests + " --deselect=spopt/tests/test_region/test_sa3.py::TestSA3::test_ward_eom_3" %}
+{% set skip_tests = skip_tests + " --deselect=spopt/tests/test_region/test_sa3.py::TestSA3::test_ward_leaf_10" %}
+{% set skip_tests = skip_tests + " --deselect=spopt/tests/test_region/test_sa3.py::TestSA3::test_extract_clusters" %}
+{% set skip_tests = skip_tests + " --deselect=spopt/tests/test_region/test_sa3.py::TestSA3::test_invalid_extraction" %}
 
 test:
   source_files:
